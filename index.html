@@ -6,7 +6,7 @@
 	<meta charset="UTF-8">
 	<meta name="format-detection" content="telephone=no">
 	<!-- <style>body{opacity: 0;}</style> -->
-	<link rel="stylesheet" href="css/style.min.css?_v=20230724233843">
+	<link rel="stylesheet" href="css/style.min.css?_v=20230727225810">
 	<link rel="shortcut icon" href="favicon.ico">
 	<!-- <meta name="robots" content="noindex, nofollow"> -->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -315,11 +315,15 @@
 							<div class="actions-header__body">
 								<div class="actions-header__items">
 									<div class="actions-header__item">
-										<a href="" class="actions-header__log button _icon-user-log">Login</a>
+										<div data-popup="#popup" class="actions-header__log button _icon-user-log">
+											Login
+										</div>
 										<!-- <span></span> -->
 									</div>
 									<div class="actions-header__item _adap-light">
-										<a href="" class="actions-header__reg button _icon-user-reg">Registration</a>
+										<button type="button" class="actions-header__reg button _icon-user-reg" data-popup="#popup">
+											Registration
+										</button>
 									</div>
 								</div>
 								<!-- ._adap-light,767 / data-da=".header__actions,767" -->
@@ -343,7 +347,7 @@
 								</form>
 							</div>
 						</div>
-						<div class="header__icons-adaptiv icons-adaptiv">
+						<div data-popup="#popup" class="header__icons-adaptiv icons-adaptiv">
 							<a href="" class="icons-adaptiv__icon-user _icon-user"></a>
 							<button type="button" class="icons-adaptiv__icon icon-menu">
 								<span></span>
@@ -370,6 +374,64 @@
 			</div>
 		</footer>
 	</div>
+	<div id="popup" aria-hidden="true" class="popup">
+		<div class="popup__wrapper">
+			<div class="popup__content">
+				<button data-close type="button" class="popup__close _icon-close"></button>
+				<div class="popup__body body-popup">
+					<div class="body-popup__header">
+						<div class="body-popup__items">
+							<div class="body-popup__item body-popup__item_log">Sign in</div>
+							<div class="body-popup__item body-popup__item_reg">Sign up</div>
+							<div class="body-popup__item-line"></div>
+						</div>
+					</div>
+					<form class="body-popup__form" method="get">
+						<div class="body-popup__input-item">
+							<div class="body-popup__labels label-popup">
+								<div class="label-popup__label">Mail</div>
+							</div>
+							<input type="text" name="form[email]" data-error="Error" placeholder="E-mail" class="body-popup__input-mail body-popup__inputs input" />
+						</div>
+						<div class="body-popup__input-item">
+							<div class="body-popup__labels label-popup">
+								<div class="label-popup__label">Password</div>
+								<a href="" class="label-popup__forget">forget?</a>
+							</div>
+							<input autocomplete="off" type="password" name="form[]" data-error="Error" placeholder="Password" value="" class="body-popup__input-password body-popup__inputs input" />
+							<button class="body-popup__viewpass _icon-eye-closed" type="button"></button>
+						</div>
+						<div class="body-popup__rules checkbox">
+							<input id="c_1" data-error="Помилка" class="checkbox__input" type="checkbox" value="1" name="form[]" />
+							<label for="c_1" class="checkbox__label"><span class="checkbox__text">I agree</span></label>
+						</div>
+						<div class="body-popup__submit button">
+							<p>Log</p>
+							<span>Reg</span>
+						</div>
+					</form>
+					<div class="popup__other other-popup">
+						<div class="other-popup__or">or</div>
+						<div class="other-popup__items">
+							<div class="other-popup__item">
+								<a href="" class="other-popup__google"><span>Continue with Google</span></a>
+							</div>
+							<div class="other-popup__item">
+								<a href="" class="other-popup__binance"><span>Continue with Binance</span></a>
+							</div>
+							<div class="other-popup__item">
+								<a href="" class="other-popup__apple"><span>Continue with Apple</span></a>
+							</div>
+						</div>
+						<div class="other-popup__rules">
+							By proceeding, you agree to CoinMarketCap's Terms of Use & Privacy
+							Policy.
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 	<!-- Стилі для body -->
 	<style>
 		.lock body {
@@ -390,7 +452,6 @@
 		}
 	</style>
 	<div id="fls-preloader">
-		<!-- Документація: https://template.fls.guru/template-docs/modul-preloader.html -->
 		<!-- Стилі для прелоадера -->
 		<style>
 			* {
@@ -418,13 +479,18 @@
 				position: fixed;
 				width: 100%;
 				height: 100%;
-				top: 0;
-				left: 0;
+				animation: scaleCircle 0.5s ease forwards;
+				/* transform: translate(0%, -50%); */
+				top: 0%;
+				left: 0%;
+
 				display: flex;
 				justify-content: center;
 				align-items: center;
 			}
 
+			/* 
+       */
 			/* Блок з елементами */
 			.fls-preloader__body {
 				padding: 0.93rem;
@@ -434,9 +500,28 @@
 			}
 
 			.fls-preloader__circle {
-				transition: all 0.3s;
+				transition: all 0.5s;
 				filter: grayscale(100%);
-				transform: scale(0);
+			}
+
+			@keyframes scaleCircle {
+				0% {
+					transform: scale(0);
+				}
+
+				100% {
+					transform: scale(1);
+				}
+			}
+
+			@keyframes transformCircle {
+				0% {}
+
+				100% {
+					transform: translate(0%, 0%);
+					top: 0%;
+					left: 0%;
+				}
 			}
 
 			/* Блок з лічильником */
@@ -465,22 +550,16 @@
 				const preloaderContainer = document.querySelector("#fls-preloader");
 				if (preloaderImages.length) {
 					const preloaderTemplate = `
+        
 					<div class="fls-preloader">
+            
 						<div class="fls-preloader__body">		
+              
 							<div class="fls-preloader__circle">
 								<picture><source srcset="img/preloader/logo.webp" type="image/webp"><img src="img/preloader/logo.png" alt=""></picture>
 								</div>
 						</div>
 					</div>`;
-
-					// `
-					// <div class="fls-preloader">
-					// 	<div class="fls-preloader__body">
-					// 		<div class="fls-preloader__counter">0%</div>
-					// 		<div class="fls-preloader__image"><picture><source srcset="img/preloader/bottom-left.webp" type="image/webp"><img src="img/preloader/bottom-left.png" alt=""></picture></div>
-					// 		<div class="fls-preloader__line"><span></span></div>
-					// 	</div>
-					// </div>`;
 					document
 						.querySelector("html")
 						.insertAdjacentHTML("beforeend", preloaderTemplate);
@@ -517,7 +596,7 @@
                 100 - progress
               }%)`) :
 							null;
-						showColorLoad ? (showColorLoad.style.transform = `scale(1)`) : null;
+						// showColorLoad ? (showColorLoad.style.transform = `scale(1)`) : null;
 					}
 
 					showPecentLoad ? setValueProgress(progress) : null;
@@ -532,7 +611,7 @@
 								clearInterval(intervalId) :
 								setValueProgress(++counter);
 							counter >= 100 ? addLoadedClass() : null;
-						}, 30);
+						}, 55);
 					}
 
 					function addLoadedClass() {
@@ -542,16 +621,18 @@
 						setInterval(() => {
 							preloader.remove();
 							preloaderContainer.remove();
-						}, 50);
+						}, 100);
 					}
 				} else {
 					preloaderContainer.remove();
 				}
 			}
+
 			preloader();
 		</script>
 	</div>
-	<script src="js/app.min.js?_v=20230724233843"></script>
+
+	<script src="js/app.min.js?_v=20230727225810"></script>
 </body>
 
 </html>
