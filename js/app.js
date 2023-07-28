@@ -265,13 +265,14 @@
             }
         }));
     }
-    function functions_FLS(message) {
+    function functions_menuClose() {
+        bodyUnlock();
+        document.documentElement.classList.remove("menu-open");
+    }
+    function FLS(message) {
         setTimeout((() => {
             if (window.FLS) console.log(message);
         }), 0);
-    }
-    function getDigFormat(item, sepp = " ") {
-        return item.toString().replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, `$1${sepp}`);
     }
     function removeClasses(array, className) {
         for (var i = 0; i < array.length; i++) array[i].classList.remove(className);
@@ -326,6 +327,7 @@
             const logHeaderPopup = document.querySelector(".body-popup__item_log");
             const regHeaderPopup = document.querySelector(".body-popup__item_reg");
             const lineHeaderPopup = document.querySelector(".body-popup__item-line");
+            const popupRules = document.querySelector(".other-popup__rules");
             const popup = document.querySelector(".popup");
             function moveLine(targetLabel) {
                 const labelRect = targetLabel.getBoundingClientRect();
@@ -334,13 +336,15 @@
                 lineHeaderPopup.style.left = `${lineLeft}px`;
             }
             document.addEventListener("DOMContentLoaded", (() => {
+                _slideUp(popupRules);
                 setTimeout((() => {
                     moveLine(logHeaderPopup);
-                }), 249);
+                }), 909);
             }));
             headerButton.addEventListener("click", (() => {
                 const popup = document.querySelector(".popup");
                 popup.classList.add("_reg-pop");
+                _slideDown(popupRules);
                 setTimeout((() => {
                     const regHeaderPopup = document.querySelector(".body-popup__item_reg");
                     moveLine(regHeaderPopup);
@@ -355,10 +359,12 @@
             logHeaderPopup.addEventListener("click", (() => {
                 popup.classList.remove("_reg-pop");
                 moveLine(logHeaderPopup);
+                _slideUp(popupRules);
             }));
             regHeaderPopup.addEventListener("click", (() => {
                 popup.classList.add("_reg-pop");
                 moveLine(regHeaderPopup);
+                _slideDown(popupRules);
             }));
             moveLine(logHeaderPopup);
             let config = {
@@ -459,6 +465,7 @@
             const logHeaderPopup = document.querySelector(".body-popup__item_log");
             const lineHeaderPopup = document.querySelector(".body-popup__item-line");
             const popup = document.querySelector(".popup");
+            const popupRules = document.querySelector(".other-popup__rules");
             function moveLine(targetLabel) {
                 const labelRect = targetLabel.getBoundingClientRect();
                 const containerRect = targetLabel.parentNode.getBoundingClientRect();
@@ -470,13 +477,17 @@
                     moveLine(logHeaderPopup);
                     e.preventDefault();
                     popup.classList.remove("_reg-pop");
+                    _slideUp(popupRules);
                     this.close();
                     return;
                 }
                 if (this.options.focusCatch && e.which == 9 && this.isOpen) {
                     this._focusCatch(e);
                     popup.classList.remove("_reg-pop");
+                    _slideUp(popupRules);
                     moveLine(logHeaderPopup);
+                    document.querySelector(".message").style.opacity = "0";
+                    document.querySelector(".message").style.visibility = "hidden";
                     return;
                 }
             }.bind(this));
@@ -579,6 +590,7 @@
             const logHeaderPopup = document.querySelector(".body-popup__item_log");
             const lineHeaderPopup = document.querySelector(".body-popup__item-line");
             const popup = document.querySelector(".popup");
+            const popupRules = document.querySelector(".other-popup__rules");
             function moveLine(targetLabel) {
                 const labelRect = targetLabel.getBoundingClientRect();
                 const containerRect = targetLabel.parentNode.getBoundingClientRect();
@@ -587,6 +599,9 @@
             }
             moveLine(logHeaderPopup);
             popup.classList.remove("_reg-pop");
+            document.querySelector(".message").style.opacity = "0";
+            document.querySelector(".message").style.visibility = "hidden";
+            _slideUp(popupRules);
             setTimeout((() => {
                 this._focusTrap();
             }), 50);
@@ -625,10 +640,48 @@
             if (!this.isOpen && this.lastFocusEl) this.lastFocusEl.focus(); else focusable[0].focus();
         }
         popupLogging(message) {
-            this.options.logging ? functions_FLS(`[Попапос]: ${message}`) : null;
+            this.options.logging ? FLS(`[Попапос]: ${message}`) : null;
         }
     }
     modules_flsModules.popup = new Popup({});
+    let gotoblock_gotoBlock = (targetBlock, noHeader = false, speed = 500, offsetTop = 0) => {
+        const targetBlockElement = document.querySelector(targetBlock);
+        if (targetBlockElement) {
+            let headerItem = "";
+            let headerItemHeight = 0;
+            if (noHeader) {
+                headerItem = "header.header";
+                const headerElement = document.querySelector(headerItem);
+                if (!headerElement.classList.contains("_header-scroll")) {
+                    headerElement.style.cssText = `transition-duration: 0s;`;
+                    headerElement.classList.add("_header-scroll");
+                    headerItemHeight = headerElement.offsetHeight;
+                    headerElement.classList.remove("_header-scroll");
+                    setTimeout((() => {
+                        headerElement.style.cssText = ``;
+                    }), 0);
+                } else headerItemHeight = headerElement.offsetHeight;
+            }
+            let options = {
+                speedAsDuration: true,
+                speed,
+                header: headerItem,
+                offset: offsetTop,
+                easing: "easeOutQuad"
+            };
+            document.documentElement.classList.contains("menu-open") ? functions_menuClose() : null;
+            if (typeof SmoothScroll !== "undefined") (new SmoothScroll).animateScroll(targetBlockElement, "", options); else {
+                let targetBlockElementPosition = targetBlockElement.getBoundingClientRect().top + scrollY;
+                targetBlockElementPosition = headerItemHeight ? targetBlockElementPosition - headerItemHeight : targetBlockElementPosition;
+                targetBlockElementPosition = offsetTop ? targetBlockElementPosition - offsetTop : targetBlockElementPosition;
+                window.scrollTo({
+                    top: targetBlockElementPosition,
+                    behavior: "smooth"
+                });
+            }
+            FLS(`[gotoBlock]: Юхуу...їдемо до ${targetBlock}`);
+        } else FLS(`[gotoBlock]: Йой... Такого блоку немає на сторінці: ${targetBlock}`);
+    };
     function formFieldsInit(options = {
         viewPass: false,
         autoHeight: false
@@ -748,6 +801,71 @@
             return !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,8})+$/.test(formRequiredItem.value);
         }
     };
+    function formSubmit() {
+        const forms = document.forms;
+        if (forms.length) for (const form of forms) {
+            form.addEventListener("submit", (function(e) {
+                const form = e.target;
+                formSubmitAction(form, e);
+            }));
+            form.addEventListener("reset", (function(e) {
+                const form = e.target;
+                formValidate.formClean(form);
+            }));
+        }
+        async function formSubmitAction(form, e) {
+            const error = !form.hasAttribute("data-no-validate") ? formValidate.getErrors(form) : 0;
+            if (error === 0) {
+                const ajax = form.hasAttribute("data-ajax");
+                if (ajax) {
+                    e.preventDefault();
+                    const formAction = form.getAttribute("action") ? form.getAttribute("action").trim() : "#";
+                    const formMethod = form.getAttribute("method") ? form.getAttribute("method").trim() : "GET";
+                    const formData = new FormData(form);
+                    form.classList.add("_sending");
+                    const response = await fetch(formAction, {
+                        method: formMethod,
+                        body: formData
+                    });
+                    if (response.ok) {
+                        let responseResult = await response.json();
+                        form.classList.remove("_sending");
+                        formSent(form, responseResult);
+                    } else {
+                        alert("Помилка");
+                        form.classList.remove("_sending");
+                    }
+                } else if (form.hasAttribute("data-dev")) {
+                    e.preventDefault();
+                    formSent(form);
+                }
+            } else {
+                e.preventDefault();
+                if (form.querySelector("._form-error") && form.hasAttribute("data-goto-error")) {
+                    const formGoToErrorClass = form.dataset.gotoError ? form.dataset.gotoError : "._form-error";
+                    gotoblock_gotoBlock(formGoToErrorClass, true, 1e3);
+                }
+            }
+        }
+        function formSent(form, responseResult = ``) {
+            document.dispatchEvent(new CustomEvent("formSent", {
+                detail: {
+                    form
+                }
+            }));
+            setTimeout((() => {
+                if (modules_flsModules.popup) {
+                    const popup = form.dataset.popupMessage;
+                    popup ? modules_flsModules.popup.open(popup) : null;
+                }
+            }), 0);
+            formValidate.formClean(form);
+            formLogging(`Форму відправлено!`);
+        }
+        function formLogging(message) {
+            FLS(`[Форми]: ${message}`);
+        }
+    }
     class ScrollWatcher {
         constructor(props) {
             let defaultConfig = {
@@ -828,7 +946,7 @@
             this.scrollWatcherLogging(`Я перестав стежити за ${targetElement.classList}`);
         }
         scrollWatcherLogging(message) {
-            this.config.logging ? functions_FLS(`[Спостерігач]: ${message}`) : null;
+            this.config.logging ? FLS(`[Спостерігач]: ${message}`) : null;
         }
         scrollWatcherCallback(entry, observer) {
             const targetElement = entry.target;
@@ -843,39 +961,6 @@
     }
     modules_flsModules.watcher = new ScrollWatcher({});
     let addWindowScrollEvent = false;
-    function digitsCounter() {
-        if (document.querySelectorAll("[data-digits-counter]").length) document.querySelectorAll("[data-digits-counter]").forEach((element => {
-            element.dataset.digitsCounter = element.innerHTML;
-            element.innerHTML = `0`;
-        }));
-        function digitsCountersInit(digitsCountersItems) {
-            let digitsCounters = digitsCountersItems ? digitsCountersItems : document.querySelectorAll("[data-digits-counter]");
-            if (digitsCounters.length) digitsCounters.forEach((digitsCounter => {
-                digitsCountersAnimate(digitsCounter);
-            }));
-        }
-        function digitsCountersAnimate(digitsCounter) {
-            let startTimestamp = null;
-            const duration = parseFloat(digitsCounter.dataset.digitsCounterSpeed) ? parseFloat(digitsCounter.dataset.digitsCounterSpeed) : 1e3;
-            const startValue = parseFloat(digitsCounter.dataset.digitsCounter);
-            const format = digitsCounter.dataset.digitsCounterFormat ? digitsCounter.dataset.digitsCounterFormat : " ";
-            const startPosition = 0;
-            const step = timestamp => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                const value = Math.floor(progress * (startPosition + startValue));
-                digitsCounter.innerHTML = typeof digitsCounter.dataset.digitsCounterFormat !== "undefined" ? getDigFormat(value, format) : value;
-                if (progress < 1) window.requestAnimationFrame(step);
-            };
-            window.requestAnimationFrame(step);
-        }
-        function digitsCounterAction(e) {
-            const entry = e.detail.entry;
-            const targetElement = entry.target;
-            if (targetElement.querySelectorAll("[data-digits-counter]").length) digitsCountersInit(targetElement.querySelectorAll("[data-digits-counter]"));
-        }
-        document.addEventListener("watcherCallback", digitsCounterAction);
-    }
     setTimeout((() => {
         if (addWindowScrollEvent) {
             let windowScroll = new Event("windowScroll");
@@ -1017,6 +1102,64 @@
         viewPassButton.addEventListener("click", (() => {
             if (viewPassButton.classList.contains("_icon-eye-closed")) viewPassButton.classList.replace("_icon-eye-closed", "_icon-eye"); else viewPassButton.classList.replace("_icon-eye", "_icon-eye-closed");
         }));
+        var myInput = document.querySelector(".body-popup__input-password");
+        var letter = document.querySelector(".message__letter");
+        var capital = document.querySelector(".message__capital");
+        var number = document.querySelector(".message__number");
+        var length = document.querySelector(".message__length");
+        var message = document.querySelector(".message");
+        document.addEventListener("DOMContentLoaded", (function() {
+            message.style.opacity = "0";
+            message.style.visibility = "hidden";
+        }));
+        if (window.innerWidth < 1100) _slideUp(message); else _slideDown(message);
+        myInput.onfocus = function() {
+            message.style.opacity = "1";
+            message.style.visibility = "visible";
+            if (window.innerWidth < 1100) {
+                _slideDown(message);
+                message.style.transform = "translate(0px, 0px)";
+            } else if (window.innerWidth > 1100) message.style.transform = "translate(-50%, 0px)";
+        };
+        myInput.onblur = function() {
+            if (window.innerWidth < 1100) {
+                _slideUp(message);
+                message.style.transform = "translate(0px, 0px)";
+            } else if (window.innerWidth > 1100) message.style.transform = "translate(50%, 0px)";
+        };
+        myInput.onkeyup = function() {
+            var lowerCaseLetters = /[a-z]/g;
+            if (myInput.value.match(lowerCaseLetters)) {
+                letter.classList.remove("invalid");
+                letter.classList.add("valid");
+            } else {
+                letter.classList.remove("valid");
+                letter.classList.add("invalid");
+            }
+            var upperCaseLetters = /[A-Z]/g;
+            if (myInput.value.match(upperCaseLetters)) {
+                capital.classList.remove("invalid");
+                capital.classList.add("valid");
+            } else {
+                capital.classList.remove("valid");
+                capital.classList.add("invalid");
+            }
+            var numbers = /[0-9]/g;
+            if (myInput.value.match(numbers)) {
+                number.classList.remove("invalid");
+                number.classList.add("valid");
+            } else {
+                number.classList.remove("valid");
+                number.classList.add("invalid");
+            }
+            if (myInput.value.length >= 8) {
+                length.classList.remove("invalid");
+                length.classList.add("valid");
+            } else {
+                length.classList.remove("valid");
+                length.classList.add("invalid");
+            }
+        };
     };
     window["FLS"] = true;
     isWebp();
@@ -1027,5 +1170,5 @@
         viewPass: true,
         autoHeight: false
     });
-    digitsCounter();
+    formSubmit();
 })();

@@ -6,7 +6,7 @@
 	<meta charset="UTF-8">
 	<meta name="format-detection" content="telephone=no">
 	<!-- <style>body{opacity: 0;}</style> -->
-	<link rel="stylesheet" href="css/style.min.css?_v=20230727231256">
+	<link rel="stylesheet" href="css/style.min.css?_v=20230728193831">
 	<link rel="shortcut icon" href="favicon.ico">
 	<!-- <meta name="robots" content="noindex, nofollow"> -->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -376,6 +376,14 @@
 	</div>
 	<div id="popup" aria-hidden="true" class="popup">
 		<div class="popup__wrapper">
+			<div data-da="._pass,1099" class="body-popup__input-message message">
+				<h3>Password should be:</h3>
+				<p class="message__letter invalid">lower case</p>
+				<p class="message__capital invalid">upper</p>
+				<p class="message__number invalid">number</p>
+				<p class="message__length invalid">length >= 8 symbols</p>
+			</div>
+
 			<div class="popup__content">
 				<button data-close type="button" class="popup__close _icon-close"></button>
 				<div class="popup__body body-popup">
@@ -386,46 +394,74 @@
 							<div class="body-popup__item-line"></div>
 						</div>
 					</div>
-					<form class="body-popup__form" method="get">
+					<form class="body-popup__form" method="POST">
 						<div class="body-popup__input-item">
 							<div class="body-popup__labels label-popup">
 								<div class="label-popup__label">Mail</div>
 							</div>
-							<input type="text" name="form[email]" data-error="Error" placeholder="E-mail" class="body-popup__input-mail body-popup__inputs input" />
+							<input data-validate data-error="E-mail is wrong" data-required="email" type="text" name="form[]" placeholder="E-mail" class="body-popup__input-mail body-popup__inputs input" />
 						</div>
-						<div class="body-popup__input-item">
+						<div class="body-popup__input-item _pass">
 							<div class="body-popup__labels label-popup">
 								<div class="label-popup__label">Password</div>
-								<a href="" class="label-popup__forget">forget?</a>
+								<a href="" class="label-popup__forget">forgot password?</a>
 							</div>
-							<input autocomplete="off" type="password" name="form[]" data-error="Error" placeholder="Password" value="" class="body-popup__input-password body-popup__inputs input" />
+							<input data-required autocomplete="off" type="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required data-error="Error" placeholder="Password" value="" class="body-popup__input-password body-popup__inputs input" />
 							<button class="body-popup__viewpass _icon-eye-closed" type="button"></button>
 						</div>
 						<div class="body-popup__rules checkbox">
 							<input id="c_1" data-error="Помилка" class="checkbox__input" type="checkbox" value="1" name="form[]" />
-							<label for="c_1" class="checkbox__label"><span class="checkbox__text">I agree</span></label>
+
+							<label for="c_1" class="checkbox__label">
+								<span class="checkbox__icon">
+									<?xml version="1.0" ?><svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+										<defs>
+											<style>
+												.cls-1 {
+													fill: none;
+													stroke: #fff;
+													stroke-linecap: round;
+													stroke-linejoin: round;
+													stroke-width: 4px;
+												}
+											</style>
+										</defs>
+										<title />
+										<g id="checkmark">
+											<line class="cls-1" x1="3" x2="12" y1="16" y2="25" />
+											<line class="cls-1" x1="12" x2="29" y1="25" y2="7" />
+										</g>
+									</svg>
+								</span><span class="checkbox__text">I agree</span></label>
 						</div>
-						<div class="body-popup__submit button">
-							<p>Log</p>
-							<span>Reg</span>
-						</div>
+						<button type="submit" class="body-popup__submit button">
+							<p>Log In</p>
+							<span>Create an account</span>
+						</button>
 					</form>
 					<div class="popup__other other-popup">
-						<div class="other-popup__or">or</div>
+						<div class="other-popup__or"><span>or</span></div>
 						<div class="other-popup__items">
 							<div class="other-popup__item">
-								<a href="" class="other-popup__google"><span>Continue with Google</span></a>
+								<button type="button" class="other-popup__google button-continue">
+									<span>Continue with Google</span>
+								</button>
 							</div>
 							<div class="other-popup__item">
-								<a href="" class="other-popup__binance"><span>Continue with Binance</span></a>
+								<button type="button" class="other-popup__binance button-continue">
+									<span>Continue with Binance</span>
+								</button>
 							</div>
 							<div class="other-popup__item">
-								<a href="" class="other-popup__apple"><span>Continue with Apple</span></a>
+								<button type="button" class="other-popup__apple button-continue">
+									<span>Continue with Apple</span>
+								</button>
 							</div>
 						</div>
 						<div class="other-popup__rules">
-							By proceeding, you agree to CoinMarketCap's Terms of Use & Privacy
-							Policy.
+							By proceeding, you agree to TmBank
+							<a href="#" target="_blank">Terms of Use</a> &
+							<a href="#" target="_blank">Privacy Policy</a>.
 						</div>
 					</div>
 				</div>
@@ -632,7 +668,7 @@
 		</script>
 	</div>
 
-	<script src="js/app.min.js?_v=20230727231256"></script>
+	<script src="js/app.min.js?_v=20230728193831"></script>
 </body>
 
 </html>
