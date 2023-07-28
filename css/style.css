@@ -2326,11 +2326,6 @@ body::after {
     background-color: var(--bg-popup-buttons-h);
   }
 
-  .button-continue:hover span::before {
-    -webkit-filter: grayscale(0);
-            filter: grayscale(0);
-  }
-
   .popup__close:hover::before {
     -webkit-transform: rotate(-180deg);
         -ms-transform: rotate(-180deg);
@@ -2359,6 +2354,13 @@ body::after {
   .search-header__delete:hover span::before,
   .search-header__delete:hover span::after {
     background-color: rgb(56, 97, 251);
+  }
+}
+
+@media (any-hover: hover) and (any-hover: hover) {
+  .button-continue:hover span::before {
+    -webkit-filter: grayscale(0);
+            filter: grayscale(0);
   }
 }
 
