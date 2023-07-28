@@ -381,6 +381,10 @@ body {
       -ms-flex: 0 0 20px;
           flex: 0 0 20px;
   margin-right: 8px;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  -webkit-filter: grayscale(1);
+          filter: grayscale(1);
 }
 
 input[type=text],
@@ -2317,6 +2321,11 @@ body::after {
 
   .button-continue:hover {
     background-color: var(--bg-popup-buttons-h);
+  }
+
+  .button-continue:hover span::before {
+    -webkit-filter: grayscale(0);
+            filter: grayscale(0);
   }
 
   .popup__close:hover::before {
