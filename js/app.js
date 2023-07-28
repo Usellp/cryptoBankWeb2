@@ -327,6 +327,7 @@
             const logHeaderPopup = document.querySelector(".body-popup__item_log");
             const regHeaderPopup = document.querySelector(".body-popup__item_reg");
             const lineHeaderPopup = document.querySelector(".body-popup__item-line");
+            const iconUser = document.querySelector(".icons-adaptiv__icon-user");
             const popupRules = document.querySelector(".other-popup__rules");
             const popup = document.querySelector(".popup");
             function moveLine(targetLabel) {
@@ -351,6 +352,12 @@
                 }), 301);
             }));
             headerButtonL.addEventListener("click", (() => {
+                setTimeout((() => {
+                    const logHeaderPopup = document.querySelector(".body-popup__item_log");
+                    moveLine(logHeaderPopup);
+                }), 301);
+            }));
+            iconUser.addEventListener("click", (() => {
                 setTimeout((() => {
                     const logHeaderPopup = document.querySelector(".body-popup__item_log");
                     moveLine(logHeaderPopup);
